@@ -1,22 +1,20 @@
-import React, { useState ,useEffect
-
-} from "react";
+import React, { useState, useEffect } from "react";
 
 export default function TicketForm({ dispatch, editingTicket }) {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [priority, setPriority] = useState("1");
 
-    useEffect(()=>{
-        if(editingTicket){
-            setTitle(editingTicket.title)
-            setDescription(editingTicket.description)
-            setPriority(editingTicket.priority)
-        }else{
+    useEffect(() => {
+        if (editingTicket) {
+            setTitle(editingTicket.title);
+            setDescription(editingTicket.description);
+            setPriority(editingTicket.priority);
+        } else {
             clearForm();
         }
-    },[editingTicket]);
-    
+    }, [editingTicket]);
+
     const priorityLabels = {
         1: "Low",
         2: "Medium",
@@ -46,6 +44,12 @@ export default function TicketForm({ dispatch, editingTicket }) {
 
         clearForm();
     };
+
+    const handleCancel = () => {
+        dispatch({ type: "CLEAR_EDITING_TICKET" });
+        clearForm();
+    };
+
     return (
         <form onSubmit={handleSubmit} className="ticket-form">
             <div>
@@ -86,6 +90,11 @@ export default function TicketForm({ dispatch, editingTicket }) {
                 <button type="submit" className="button">
                     Submit
                 </button>
+                {editingTicket && (
+                    <button className="button" onClick={handleCancel}>
+                        Cancel Edit
+                    </button>
+                )}
             </div>
         </form>
     );
