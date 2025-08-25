@@ -1,10 +1,22 @@
-import React, { useState } from "react";
+import React, { useState ,useEffect
 
-export default function TicketForm({dispatch}) {
+} from "react";
+
+export default function TicketForm({ dispatch, editingTicket }) {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [priority, setPriority] = useState("1");
 
+    useEffect(()=>{
+        if(editingTicket){
+            setTitle(editingTicket.title)
+            setDescription(editingTicket.description)
+            setPriority(editingTicket.priority)
+        }else{
+            clearForm();
+        }
+    },[editingTicket]);
+    
     const priorityLabels = {
         1: "Low",
         2: "Medium",
@@ -19,18 +31,18 @@ export default function TicketForm({dispatch}) {
 
     const handleSubmit = (e) => {
         e.preventDefault(); //make sure the page does not get reloaded
-        const ticketData ={
-            id:new Date().toISOString(),
+        const ticketData = {
+            id: editingTicket ? editingTicket.id : new Date().toISOString(),
             title,
             description,
             priority,
-        }
+        };
         console.log(ticketData);
 
         dispatch({
-            type: "ADD_TICKET",
-            payload:ticketData
-        })
+            type: editingTicket ? "UPDATE_TICKET" : "ADD_TICKET",
+            payload: ticketData,
+        });
 
         clearForm();
     };
@@ -71,7 +83,9 @@ export default function TicketForm({dispatch}) {
                         ))
                     }
                 </fieldset>
-                <button type="submit" className="button">Submit</button>
+                <button type="submit" className="button">
+                    Submit
+                </button>
             </div>
         </form>
     );
